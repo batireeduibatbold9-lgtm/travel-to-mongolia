@@ -3,13 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Discover Mongolia - Аяллын хөтөч</title>
-    <!-- Tailwind CSS CDN -->
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -27,6 +37,7 @@
             }
         }
     </script>
+
     <style>
         .glass-panel {
             background: rgba(15, 23, 42, 0.75);
@@ -34,302 +45,1793 @@
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
+
+        .modal-bg {
+            background: rgba(2, 6, 23, 0.80);
+            backdrop-filter: blur(8px);
+        }
+
+        .auth-input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid #334155;
+            border-radius: 0.75rem;
+            padding: 0.85rem 1rem;
+            color: white;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .auth-input:focus {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        }
+
+        .auth-input::placeholder {
+            color: #64748b;
+        }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-amber-500 selection:text-slate-950">
 
-    <!-- Header & Navigation -->
-    <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <!-- Logo -->
-                <a href="#" class="flex items-center gap-3 group">
-                    <div class="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform">
-                        M
-                    </div>
-                    <span class="text-xl font-bold tracking-tight text-white group-hover:text-amber-400 transition-colors">
-                        Discover<span class="text-amber-500">Mongolia</span>
-                    </span>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased
+             selection:bg-amber-500 selection:text-slate-950">
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-slate-800">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="flex items-center justify-between h-20">
+
+            <!-- Logo -->
+            <a href="#"
+               class="flex items-center gap-3 group">
+
+                <div class="w-10 h-10 rounded-xl bg-amber-500
+                            flex items-center justify-center
+                            text-slate-950 font-black text-xl
+                            shadow-lg shadow-amber-500/20
+                            group-hover:scale-105 transition-transform">
+                    M
+                </div>
+
+                <span class="text-xl font-bold tracking-tight text-white
+                             group-hover:text-amber-400 transition-colors">
+                    Discover<span class="text-amber-500">Mongolia</span>
+                </span>
+
+            </a>
+
+
+            <!-- Navigation -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+
+                <a href="#about"
+                   class="text-slate-300 hover:text-amber-400 transition-colors">
+                    Тойм
                 </a>
 
-                <!-- Nav Items -->
-                <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
-                    <a href="#about" class="text-slate-300 hover:text-amber-400 transition-colors">Тойм</a>
-                    <a href="#destinations" class="text-slate-300 hover:text-amber-400 transition-colors">Чиглэлүүд</a>
-                    <a href="#weather" class="text-slate-300 hover:text-amber-400 transition-colors">Цаг агаар</a>
-                    <a href="#gallery" class="text-slate-300 hover:text-amber-400 transition-colors">Зургийн цомог</a>
-                </nav>
-
-                <!-- Date & Time Widget -->
-                <div class="hidden lg:flex items-center gap-3 bg-slate-900/80 px-4 py-2 rounded-full border border-slate-800 text-xs text-slate-300">
-                    <i class="fa-regular fa-clock text-amber-500"></i>
-                    <span id="current-datetime" class="font-mono">Улаанбаатар: Цаг ачааллаж байна...</span>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
-        <!-- Hero Background Image (Хонгорын Элс) -->
-        <div class="absolute inset-0 z-0">
-            <img src="https://images.unsplash.com/photo-1528164344705-47542687990d?q=80&w=1920&auto=format&fit=crop" 
-                 alt="Mongolian Desert Landscape" 
-                 class="w-full h-full object-cover object-center brightness-60 scale-105 animate-pulse" 
-                 style="animation-duration: 10s;">
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
-        </div>
-
-        <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center mt-12">
-            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold uppercase tracking-wider mb-6">
-                <i class="fa-solid fa-compass"></i> Адал явдалт аялал
-            </span>
-            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-tight mb-6">
-                Онгон байгаль, <br class="hidden sm:inline">
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-200 to-amber-500">
-                    Нүүдэлчдийн Соёлтой
-                </span> Танилц
-            </h1>
-            <p class="max-w-2xl mx-auto text-base sm:text-lg text-slate-300 mb-10 leading-relaxed">
-                Төгсгөлгүй үргэлжлэх тал нутаг, Говийн сүрлэг элсэн манхнаас эхлээд Хөвсгөлийн хөх сувд, эртний түүхт Хархорум хүртэлх бодит гоо үзэсгэлэнг мэдрээрэй.
-            </p>
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="#destinations" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold transition-all shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2">
-                    Аяллын чиглэл үзэх <i class="fa-solid fa-arrow-right text-xs"></i>
+                <a href="#destinations"
+                   class="text-slate-300 hover:text-amber-400 transition-colors">
+                    Чиглэлүүд
                 </a>
-                <a href="#weather" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-white font-semibold border border-slate-700 transition-all flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-cloud-sun text-amber-400"></i> Цаг агаар шалгах
+
+                <a href="#weather"
+                   class="text-slate-300 hover:text-amber-400 transition-colors">
+                    Цаг агаар
                 </a>
-            </div>
-        </div>
-    </section>
 
-    <!-- Interactive Weather Section -->
-    <section id="weather" class="py-20 relative bg-slate-900/50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-12">
-                <h2 class="text-3xl font-bold text-white mb-4">Бүс нутгийн цаг агаарын мэдээ</h2>
-                <p class="text-slate-400 text-sm">Mongolia-ийн гол аяллын бүс нутгуудын цаг агаарын нөхцөл байдал</p>
-            </div>
+                <a href="#gallery"
+                   class="text-slate-300 hover:text-amber-400 transition-colors">
+                    Зургийн цомог
+                </a>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Weather Card 1: Ulaanbaatar -->
-                <div class="glass-panel p-6 rounded-2xl border border-slate-800 hover:border-amber-500/50 transition-all">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="text-lg font-bold text-white">Улаанбаатар</span>
-                        <i class="fa-solid fa-sun text-2xl text-amber-400"></i>
-                    </div>
-                    <div class="text-3xl font-extrabold text-white mb-2">+18°C</div>
-                    <p class="text-xs text-slate-400">Цэлмэг, нарлаг</p>
-                    <div class="mt-4 pt-4 border-t border-slate-800/80 flex justify-between text-xs text-slate-400">
-                        <span>Салхи: 8 км/ц</span>
-                        <span>Чийгшил: 42%</span>
-                    </div>
-                </div>
+            </nav>
 
-                <!-- Weather Card 2: South Gobi -->
-                <div class="glass-panel p-6 rounded-2xl border border-slate-800 hover:border-amber-500/50 transition-all">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="text-lg font-bold text-white">Өмнөговь</span>
-                        <i class="fa-solid fa-temperature-high text-2xl text-amber-500"></i>
-                    </div>
-                    <div class="text-3xl font-extrabold text-white mb-2">+26°C</div>
-                    <p class="text-xs text-slate-400">Халуун, багавтар үүлтэй</p>
-                    <div class="mt-4 pt-4 border-t border-slate-800/80 flex justify-between text-xs text-slate-400">
-                        <span>Салхи: 14 км/ц</span>
-                        <span>Чийгшил: 20%</span>
-                    </div>
-                </div>
 
-                <!-- Weather Card 3: Khuvsgul -->
-                <div class="glass-panel p-6 rounded-2xl border border-slate-800 hover:border-amber-500/50 transition-all">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="text-lg font-bold text-white">Хөвсгөл нуур</span>
-                        <i class="fa-solid fa-cloud-sun text-2xl text-blue-400"></i>
-                    </div>
-                    <div class="text-3xl font-extrabold text-white mb-2">+14°C</div>
-                    <p class="text-xs text-slate-400">Сэрүүн, тунгалаг</p>
-                    <div class="mt-4 pt-4 border-t border-slate-800/80 flex justify-between text-xs text-slate-400">
-                        <span>Салхи: 10 км/ц</span>
-                        <span>Чийгшил: 58%</span>
-                    </div>
-                </div>
-
-                <!-- Weather Card 4: Karakorum -->
-                <div class="glass-panel p-6 rounded-2xl border border-slate-800 hover:border-amber-500/50 transition-all">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="text-lg font-bold text-white">Хархорин</span>
-                        <i class="fa-solid fa-cloud text-2xl text-slate-400"></i>
-                    </div>
-                    <div class="text-3xl font-extrabold text-white mb-2">+16°C</div>
-                    <p class="text-xs text-slate-400">Үүлэрхэг</p>
-                    <div class="mt-4 pt-4 border-t border-slate-800/80 flex justify-between text-xs text-slate-400">
-                        <span>Салхи: 12 км/ц</span>
-                        <span>Чийгшил: 50%</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Real Photo Gallery Section -->
-    <section id="gallery" class="py-24 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-16">
-                <span class="text-amber-500 font-semibold text-xs tracking-wider uppercase">Бодит зураглалууд</span>
-                <h2 class="text-3xl sm:text-4xl font-bold text-white mt-2 mb-4">Монгол орны байгаль & Соёл</h2>
-                <p class="text-slate-400 text-sm">Таны аяллаар үзэх бодит байгалийн баялаг, түүхэн дурсгалууд</p>
-            </div>
-
-            <!-- Image Grid with Real Unsplash Photos -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-                <!-- Photo 1: Gobi Camel Riding -->
-                <div class="group relative rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 hover:border-amber-500/50 transition-all">
-                    <div class="aspect-video w-full overflow-hidden">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxoNKsDQBeFmGi9XHw8RfOhARH-kNMPJo-5Q0J9HOGwDzbK3uwgckI1BKJ&s=10" 
-                             alt="Gobi Camel Riding" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 text-xs text-amber-400 font-medium mb-2">
-                            <i class="fa-solid fa-location-dot"></i> Өмнөговь аймаг
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Хонгорын Элс & Тэмээн аялал</h3>
-                        <p class="text-slate-400 text-sm leading-relaxed">
-                            2 бөхт Бактриан тэмээгээр сүрлэг элсэн манхнууд дунд аялан, говийн нүүдэлчин айлаар зочлох боломж.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Photo 2: Lake Khuvsgul & Reindeer Nomads -->
-                <div class="group relative rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 hover:border-amber-500/50 transition-all">
-                    <div class="aspect-video w-full overflow-hidden">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHwvACLC7dTRk2G44Sawaw9HhschcGRMBC-7Ui6qZoWcadZBAxYVVUbEsB&s=10" 
-                             alt="Lake Khuvsgul" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 text-xs text-amber-400 font-medium mb-2">
-                            <i class="fa-solid fa-location-dot"></i> Хөвсгөл аймаг
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Хөвсгөл Нуур & Цаатан Иргэд</h3>
-                        <p class="text-slate-400 text-sm leading-relaxed">
-                            Азийн хамгийн цэнгэг нуурын нэг ба тайгад амьдрах Цаатан иргэдийн өвөрмөц ахуйтай танилцах хөтөлбөр.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Photo 3: Erdene Zuu Monastery -->
-                <div class="group relative rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 hover:border-amber-500/50 transition-all">
-                    <div class="aspect-video w-full overflow-hidden">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl_FlRUhUNEMImdVlK41jvQya620F2Ziw8MjN8iFSLW7oRNnKhYGU0Bd7a&s=10" 
-                             alt="Erdene Zuu Monastery" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 text-xs text-amber-400 font-medium mb-2">
-                            <i class="fa-solid fa-location-dot"></i> Өвөрхангай аймаг
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Эрдэнэ Зуу Хийд & Хархорум</h3>
-                        <p class="text-slate-400 text-sm leading-relaxed">
-                            Их Монгол Улсын эртний нийслэл Хархорум хотын ариун туурь болон Монголын анхны буддын хийд.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Photo 4: Gandan Monastery, UB -->
-                <div class="group relative rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 hover:border-amber-500/50 transition-all">
-                    <div class="aspect-video w-full overflow-hidden">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOblZTu39Ef06j6_76tk1gbOZmmtPt1HR4bTH3zFCbqQ&s=10" 
-                             alt="Ulaanbaatar City" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 text-xs text-amber-400 font-medium mb-2">
-                            <i class="fa-solid fa-location-dot"></i> Улаанбаатар хот
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Гандантэгчэнлин Хийд</h3>
-                        <p class="text-slate-400 text-sm leading-relaxed">
-                            Орчин үе ба уламжлалт соёл хосолсон нийслэл хотын хамгийн ариун дагшин шашны төв.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Photo 5: Steppe Nomadic Life -->
-                <div class="group relative rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 hover:border-amber-500/50 transition-all">
-                    <div class="aspect-video w-full overflow-hidden">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3Wm8aLBLCtrop1TvC0tYqn0Ghqlyk6KcBWCZdooAmPA&s=10" 
-                             alt="Mongolian Yurt Camp" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 text-xs text-amber-400 font-medium mb-2">
-                            <i class="fa-solid fa-location-dot"></i> Төв аймаг / Хөдөө нутаг
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Нүүдэлчин Айл & Гэр Кэмп</h3>
-                        <p class="text-slate-400 text-sm leading-relaxed">
-                            Монгол гэрт хоноглож, цагаан идээ амтлан, адуучин айлын ахуй амьдралтай ойроос танилцах боломж.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Photo 6: Flaming Cliffs (Bayanzag) -->
-                <div class="group relative rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 hover:border-amber-500/50 transition-all">
-                    <div class="aspect-video w-full overflow-hidden">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8ul1u6XkLVSlb1_HF4Eh_wDv2X7IDfc7pWvPD1BfuBA&s=10" 
-                             alt="Flaming Cliffs" 
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 text-xs text-amber-400 font-medium mb-2">
-                            <i class="fa-solid fa-location-dot"></i> Баянзаг (Баянзаг)
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Улаан эрэг (Баянзаг)</h3>
-                        <p class="text-slate-400 text-sm leading-relaxed">
-                            60 сая жилийн тэртээх динозаврын олдворууд олдсон дэлхийд алдартай улаан цонж, говийн баянбүрд.
-                        </p>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-slate-950 border-t border-slate-800 py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <!-- RIGHT SIDE -->
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center text-slate-950 font-black">M</div>
-                <span class="text-lg font-bold text-white">Discover Mongolia Tour</span>
-            </div>
-            <p class="text-xs text-slate-500 text-center">
-                © 2026 Discover Mongolia. GitHub Pages дээр зориулан бүтээв.
-            </p>
-            <div class="flex gap-4 text-slate-400">
-                <a href="#" class="hover:text-amber-400 transition-colors"><i class="fa-brands fa-github text-lg"></i></a>
-                <a href="#" class="hover:text-amber-400 transition-colors"><i class="fa-brands fa-facebook text-lg"></i></a>
-                <a href="#" class="hover:text-amber-400 transition-colors"><i class="fa-brands fa-instagram text-lg"></i></a>
-            </div>
-        </div>
-    </footer>
 
-    <!-- Real-Time Clock Script -->
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const options = { 
-                timeZone: 'Asia/Ulaanbaatar', 
-                hour: '2-digit', 
-                minute: '2-digit', 
-                second: '2-digit',
-                hour12: false 
-            };
-            const timeString = now.toLocaleTimeString('mn-MN', options);
-            document.getElementById('current-datetime').textContent = `Улаанбаатар цаг: ${timeString}`;
+                <!-- Clock -->
+                <div class="hidden xl:flex items-center gap-3
+                            bg-slate-900/80 px-4 py-2 rounded-full
+                            border border-slate-800 text-xs text-slate-300">
+
+                    <i class="fa-regular fa-clock text-amber-500"></i>
+
+                    <span id="current-datetime"
+                          class="font-mono">
+                        Улаанбаатар: Ачааллаж байна...
+                    </span>
+
+                </div>
+
+
+                <!-- Auth Area -->
+                <div id="auth-area">
+
+                    <div class="flex items-center gap-2">
+
+                        <button
+                            onclick="openAuthModal('login')"
+                            class="hidden sm:block px-4 py-2 rounded-lg
+                                   border border-slate-700
+                                   hover:border-amber-500
+                                   text-slate-200 hover:text-amber-400
+                                   text-sm font-semibold transition">
+                            Нэвтрэх
+                        </button>
+
+                        <button
+                            onclick="openAuthModal('signup')"
+                            class="px-4 py-2 rounded-lg
+                                   bg-amber-500 hover:bg-amber-600
+                                   text-slate-950
+                                   text-sm font-bold transition">
+                            Бүртгүүлэх
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</header>
+
+
+<!-- =========================================================
+     HERO
+========================================================= -->
+
+<section class="relative min-h-screen flex items-center justify-center
+                pt-20 overflow-hidden">
+
+    <div class="absolute inset-0 z-0">
+
+        <img
+            src="https://images.unsplash.com/photo-1528164344705-47542687990d?q=80&w=1920&auto=format&fit=crop"
+            alt="Mongolian Desert Landscape"
+            class="w-full h-full object-cover object-center brightness-60">
+
+        <div class="absolute inset-0
+                    bg-gradient-to-t from-slate-950
+                    via-slate-950/40 to-transparent">
+        </div>
+
+    </div>
+
+
+    <div class="relative z-10 max-w-5xl mx-auto px-4
+                sm:px-6 lg:px-8 text-center mt-12">
+
+        <span class="inline-flex items-center gap-2
+                     px-4 py-1.5 rounded-full
+                     bg-amber-500/10
+                     border border-amber-500/30
+                     text-amber-400 text-xs
+                     font-semibold uppercase tracking-wider mb-6">
+
+            <i class="fa-solid fa-compass"></i>
+
+            Адал явдалт аялал
+
+        </span>
+
+
+        <h1 class="text-4xl sm:text-6xl lg:text-7xl
+                   font-extrabold text-white tracking-tight
+                   leading-tight mb-6">
+
+            Онгон байгаль,
+
+            <br class="hidden sm:inline">
+
+            <span class="text-transparent bg-clip-text
+                         bg-gradient-to-r from-amber-400
+                         via-amber-200 to-amber-500">
+
+                Нүүдэлчдийн Соёлтой
+
+            </span>
+
+            Танилц
+
+        </h1>
+
+
+        <p class="max-w-2xl mx-auto
+                  text-base sm:text-lg
+                  text-slate-300 mb-10
+                  leading-relaxed">
+
+            Төгсгөлгүй үргэлжлэх тал нутаг,
+            Говийн сүрлэг элсэн манхнаас эхлээд
+            Хөвсгөлийн хөх сувд, эртний түүхт
+            Хархорум хүртэлх бодит гоо үзэсгэлэнг мэдрээрэй.
+
+        </p>
+
+
+        <div class="flex flex-col sm:flex-row
+                    items-center justify-center gap-4">
+
+            <a href="#destinations"
+               class="w-full sm:w-auto px-8 py-4 rounded-xl
+                      bg-amber-500 hover:bg-amber-600
+                      text-slate-950 font-bold transition-all
+                      shadow-lg shadow-amber-500/25
+                      flex items-center justify-center gap-2">
+
+                Аяллын чиглэл үзэх
+
+                <i class="fa-solid fa-arrow-right text-xs"></i>
+
+            </a>
+
+
+            <a href="#weather"
+               class="w-full sm:w-auto px-8 py-4 rounded-xl
+                      bg-slate-900/80 hover:bg-slate-800
+                      text-white font-semibold
+                      border border-slate-700
+                      transition-all
+                      flex items-center justify-center gap-2">
+
+                <i class="fa-solid fa-cloud-sun text-amber-400"></i>
+
+                Цаг агаар шалгах
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     WEATHER
+========================================================= -->
+
+<section id="weather"
+         class="py-20 relative bg-slate-900/50">
+
+    <div class="max-w-7xl mx-auto
+                px-4 sm:px-6 lg:px-8">
+
+        <div class="text-center max-w-2xl
+                    mx-auto mb-12">
+
+            <h2 class="text-3xl font-bold text-white mb-4">
+                Бүс нутгийн цаг агаарын мэдээ
+            </h2>
+
+            <p class="text-slate-400 text-sm">
+                Mongolia-ийн гол аяллын бүс нутгуудын
+                цаг агаарын нөхцөл байдал
+            </p>
+
+        </div>
+
+
+        <div class="grid grid-cols-1 md:grid-cols-2
+                    lg:grid-cols-4 gap-6">
+
+
+            <!-- UB -->
+
+            <div class="glass-panel p-6 rounded-2xl
+                        border border-slate-800
+                        hover:border-amber-500/50
+                        transition-all">
+
+                <div class="flex items-center
+                            justify-between mb-4">
+
+                    <span class="text-lg font-bold text-white">
+                        Улаанбаатар
+                    </span>
+
+                    <i class="fa-solid fa-sun
+                              text-2xl text-amber-400">
+                    </i>
+
+                </div>
+
+                <div class="text-3xl font-extrabold
+                            text-white mb-2">
+                    +18°C
+                </div>
+
+                <p class="text-xs text-slate-400">
+                    Цэлмэг, нарлаг
+                </p>
+
+                <div class="mt-4 pt-4
+                            border-t border-slate-800/80
+                            flex justify-between
+                            text-xs text-slate-400">
+
+                    <span>Салхи: 8 км/ц</span>
+                    <span>Чийгшил: 42%</span>
+
+                </div>
+
+            </div>
+
+
+            <!-- GOBI -->
+
+            <div class="glass-panel p-6 rounded-2xl
+                        border border-slate-800
+                        hover:border-amber-500/50
+                        transition-all">
+
+                <div class="flex items-center
+                            justify-between mb-4">
+
+                    <span class="text-lg font-bold text-white">
+                        Өмнөговь
+                    </span>
+
+                    <i class="fa-solid fa-temperature-high
+                              text-2xl text-amber-500">
+                    </i>
+
+                </div>
+
+                <div class="text-3xl font-extrabold
+                            text-white mb-2">
+                    +26°C
+                </div>
+
+                <p class="text-xs text-slate-400">
+                    Халуун, багавтар үүлтэй
+                </p>
+
+                <div class="mt-4 pt-4
+                            border-t border-slate-800/80
+                            flex justify-between
+                            text-xs text-slate-400">
+
+                    <span>Салхи: 14 км/ц</span>
+                    <span>Чийгшил: 20%</span>
+
+                </div>
+
+            </div>
+
+
+            <!-- KHUVSGUL -->
+
+            <div class="glass-panel p-6 rounded-2xl
+                        border border-slate-800
+                        hover:border-amber-500/50
+                        transition-all">
+
+                <div class="flex items-center
+                            justify-between mb-4">
+
+                    <span class="text-lg font-bold text-white">
+                        Хөвсгөл нуур
+                    </span>
+
+                    <i class="fa-solid fa-cloud-sun
+                              text-2xl text-blue-400">
+                    </i>
+
+                </div>
+
+                <div class="text-3xl font-extrabold
+                            text-white mb-2">
+                    +14°C
+                </div>
+
+                <p class="text-xs text-slate-400">
+                    Сэрүүн, тунгалаг
+                </p>
+
+                <div class="mt-4 pt-4
+                            border-t border-slate-800/80
+                            flex justify-between
+                            text-xs text-slate-400">
+
+                    <span>Салхи: 10 км/ц</span>
+                    <span>Чийгшил: 58%</span>
+
+                </div>
+
+            </div>
+
+
+            <!-- KHARKHORIN -->
+
+            <div class="glass-panel p-6 rounded-2xl
+                        border border-slate-800
+                        hover:border-amber-500/50
+                        transition-all">
+
+                <div class="flex items-center
+                            justify-between mb-4">
+
+                    <span class="text-lg font-bold text-white">
+                        Хархорин
+                    </span>
+
+                    <i class="fa-solid fa-cloud
+                              text-2xl text-slate-400">
+                    </i>
+
+                </div>
+
+                <div class="text-3xl font-extrabold
+                            text-white mb-2">
+                    +16°C
+                </div>
+
+                <p class="text-xs text-slate-400">
+                    Үүлэрхэг
+                </p>
+
+                <div class="mt-4 pt-4
+                            border-t border-slate-800/80
+                            flex justify-between
+                            text-xs text-slate-400">
+
+                    <span>Салхи: 12 км/ц</span>
+                    <span>Чийгшил: 50%</span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     GALLERY
+========================================================= -->
+
+<section id="gallery" class="py-24 relative">
+
+    <div class="max-w-7xl mx-auto
+                px-4 sm:px-6 lg:px-8">
+
+        <div class="text-center max-w-2xl
+                    mx-auto mb-16">
+
+            <span class="text-amber-500 font-semibold
+                         text-xs tracking-wider uppercase">
+                Бодит зураглалууд
+            </span>
+
+            <h2 class="text-3xl sm:text-4xl
+                       font-bold text-white mt-2 mb-4">
+
+                Монгол орны байгаль & Соёл
+
+            </h2>
+
+            <p class="text-slate-400 text-sm">
+
+                Таны аяллаар үзэх бодит байгалийн
+                баялаг, түүхэн дурсгалууд
+
+            </p>
+
+        </div>
+
+
+        <div class="grid grid-cols-1 md:grid-cols-2
+                    lg:grid-cols-3 gap-8">
+
+
+            <!-- CARD 1 -->
+
+            <div class="group relative rounded-2xl
+                        overflow-hidden bg-slate-900
+                        border border-slate-800
+                        hover:border-amber-500/50
+                        transition-all">
+
+                <div class="aspect-video
+                            w-full overflow-hidden">
+
+                    <img
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxoNKsDQBeFmGi9XHw8RfOhARH-kNMPJo-5Q0J9HOGwDzbK3uwgckI1BKJ&s=10"
+                        alt="Gobi Camel Riding"
+                        class="w-full h-full object-cover
+                               group-hover:scale-110
+                               transition-transform duration-500">
+
+                </div>
+
+                <div class="p-6">
+
+                    <div class="flex items-center gap-2
+                                text-xs text-amber-400
+                                font-medium mb-2">
+
+                        <i class="fa-solid fa-location-dot"></i>
+                        Өмнөговь аймаг
+
+                    </div>
+
+                    <h3 class="text-xl font-bold
+                               text-white mb-2">
+
+                        Хонгорын Элс & Тэмээн аялал
+
+                    </h3>
+
+                    <p class="text-slate-400 text-sm
+                              leading-relaxed">
+
+                        2 бөхт Бактриан тэмээгээр сүрлэг
+                        элсэн манхнууд дунд аялан,
+                        говийн нүүдэлчин айлаар зочлох боломж.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- CARD 2 -->
+
+            <div class="group relative rounded-2xl
+                        overflow-hidden bg-slate-900
+                        border border-slate-800
+                        hover:border-amber-500/50
+                        transition-all">
+
+                <div class="aspect-video
+                            w-full overflow-hidden">
+
+                    <img
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHwvACLC7dTRk2G44Sawaw9HhschcGRMBC-7Ui6qZoWcadZBAxYVVUbEsB&s=10"
+                        alt="Lake Khuvsgul"
+                        class="w-full h-full object-cover
+                               group-hover:scale-110
+                               transition-transform duration-500">
+
+                </div>
+
+                <div class="p-6">
+
+                    <div class="flex items-center gap-2
+                                text-xs text-amber-400
+                                font-medium mb-2">
+
+                        <i class="fa-solid fa-location-dot"></i>
+                        Хөвсгөл аймаг
+
+                    </div>
+
+                    <h3 class="text-xl font-bold
+                               text-white mb-2">
+
+                        Хөвсгөл Нуур & Цаатан Иргэд
+
+                    </h3>
+
+                    <p class="text-slate-400 text-sm
+                              leading-relaxed">
+
+                        Хөвсгөл нуурын байгалийн үзэсгэлэн
+                        болон тайгын амьдралтай танилцах боломж.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- CARD 3 -->
+
+            <div class="group relative rounded-2xl
+                        overflow-hidden bg-slate-900
+                        border border-slate-800
+                        hover:border-amber-500/50
+                        transition-all">
+
+                <div class="aspect-video
+                            w-full overflow-hidden">
+
+                    <img
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl_FlRUhUNEMImdVlK41jvQya620F2Ziw8MjN8iFSLW7oRNnKhYGU0Bd7a&s=10"
+                        alt="Erdene Zuu Monastery"
+                        class="w-full h-full object-cover
+                               group-hover:scale-110
+                               transition-transform duration-500">
+
+                </div>
+
+                <div class="p-6">
+
+                    <div class="flex items-center gap-2
+                                text-xs text-amber-400
+                                font-medium mb-2">
+
+                        <i class="fa-solid fa-location-dot"></i>
+                        Өвөрхангай аймаг
+
+                    </div>
+
+                    <h3 class="text-xl font-bold
+                               text-white mb-2">
+
+                        Эрдэнэ Зуу Хийд & Хархорум
+
+                    </h3>
+
+                    <p class="text-slate-400 text-sm
+                              leading-relaxed">
+
+                        Эртний Хархорумын туурь болон
+                        Эрдэнэ Зуу хийдтэй танилцах аялал.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- CARD 4 -->
+
+            <div class="group relative rounded-2xl
+                        overflow-hidden bg-slate-900
+                        border border-slate-800
+                        hover:border-amber-500/50
+                        transition-all">
+
+                <div class="aspect-video
+                            w-full overflow-hidden">
+
+                    <img
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOblZTu39Ef06j6_76tk1gbOZmmtPt1HR4bTH3zFCbqQ&s=10"
+                        alt="Ulaanbaatar City"
+                        class="w-full h-full object-cover
+                               group-hover:scale-110
+                               transition-transform duration-500">
+
+                </div>
+
+                <div class="p-6">
+
+                    <div class="flex items-center gap-2
+                                text-xs text-amber-400
+                                font-medium mb-2">
+
+                        <i class="fa-solid fa-location-dot"></i>
+                        Улаанбаатар хот
+
+                    </div>
+
+                    <h3 class="text-xl font-bold
+                               text-white mb-2">
+
+                        Гандантэгчэнлин Хийд
+
+                    </h3>
+
+                    <p class="text-slate-400 text-sm
+                              leading-relaxed">
+
+                        Нийслэл хотын уламжлалт соёл,
+                        түүхийн онцлогтой танилцах боломж.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- CARD 5 -->
+
+            <div class="group relative rounded-2xl
+                        overflow-hidden bg-slate-900
+                        border border-slate-800
+                        hover:border-amber-500/50
+                        transition-all">
+
+                <div class="aspect-video
+                            w-full overflow-hidden">
+
+                    <img
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3Wm8aLBLCtrop1TvC0tYqn0Ghqlyk6KcBWCZdooAmPA&s=10"
+                        alt="Mongolian Yurt Camp"
+                        class="w-full h-full object-cover
+                               group-hover:scale-110
+                               transition-transform duration-500">
+
+                </div>
+
+                <div class="p-6">
+
+                    <div class="flex items-center gap-2
+                                text-xs text-amber-400
+                                font-medium mb-2">
+
+                        <i class="fa-solid fa-location-dot"></i>
+                        Төв аймаг / Хөдөө нутаг
+
+                    </div>
+
+                    <h3 class="text-xl font-bold
+                               text-white mb-2">
+
+                        Нүүдэлчин Айл & Гэр Кэмп
+
+                    </h3>
+
+                    <p class="text-slate-400 text-sm
+                              leading-relaxed">
+
+                        Монгол гэрт хоноглож,
+                        нүүдэлчин ахуйтай танилцах боломж.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- CARD 6 -->
+
+            <div class="group relative rounded-2xl
+                        overflow-hidden bg-slate-900
+                        border border-slate-800
+                        hover:border-amber-500/50
+                        transition-all">
+
+                <div class="aspect-video
+                            w-full overflow-hidden">
+
+                    <img
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8ul1u6XkLVSlb1_HF4Eh_wDv2X7IDfc7pWvPD1BfuBA&s=10"
+                        alt="Flaming Cliffs"
+                        class="w-full h-full object-cover
+                               group-hover:scale-110
+                               transition-transform duration-500">
+
+                </div>
+
+                <div class="p-6">
+
+                    <div class="flex items-center gap-2
+                                text-xs text-amber-400
+                                font-medium mb-2">
+
+                        <i class="fa-solid fa-location-dot"></i>
+                        Баянзаг
+
+                    </div>
+
+                    <h3 class="text-xl font-bold
+                               text-white mb-2">
+
+                        Улаан эрэг (Баянзаг)
+
+                    </h3>
+
+                    <p class="text-slate-400 text-sm
+                              leading-relaxed">
+
+                        Дэлхийд алдартай улаан цонж,
+                        говийн байгалийн өвөрмөц тогтоц.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="bg-slate-950
+               border-t border-slate-800 py-12">
+
+    <div class="max-w-7xl mx-auto
+                px-4 sm:px-6 lg:px-8
+                flex flex-col md:flex-row
+                items-center justify-between gap-6">
+
+        <div class="flex items-center gap-3">
+
+            <div class="w-8 h-8 rounded-lg
+                        bg-amber-500
+                        flex items-center justify-center
+                        text-slate-950 font-black">
+                M
+            </div>
+
+            <span class="text-lg font-bold text-white">
+                Discover Mongolia Tour
+            </span>
+
+        </div>
+
+        <p class="text-xs text-slate-500 text-center">
+            © 2026 Discover Mongolia.
+            GitHub Pages дээр зориулан бүтээв.
+        </p>
+
+        <div class="flex gap-4 text-slate-400">
+
+            <a href="#"
+               class="hover:text-amber-400 transition-colors">
+                <i class="fa-brands fa-github text-lg"></i>
+            </a>
+
+            <a href="#"
+               class="hover:text-amber-400 transition-colors">
+                <i class="fa-brands fa-facebook text-lg"></i>
+            </a>
+
+            <a href="#"
+               class="hover:text-amber-400 transition-colors">
+                <i class="fa-brands fa-instagram text-lg"></i>
+            </a>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+<!-- =========================================================
+     AUTH MODAL
+========================================================= -->
+
+<div id="auth-modal"
+     class="hidden fixed inset-0 z-[100]
+            modal-bg flex items-center
+            justify-center p-4">
+
+    <div class="w-full max-w-md
+                glass-panel rounded-2xl
+                border border-slate-700
+                shadow-2xl">
+
+        <!-- Modal Header -->
+
+        <div class="flex items-center
+                    justify-between p-6
+                    border-b border-slate-800">
+
+            <div>
+
+                <h2 id="auth-title"
+                    class="text-2xl font-bold text-white">
+                    Нэвтрэх
+                </h2>
+
+                <p id="auth-subtitle"
+                   class="text-sm text-slate-400 mt-1">
+                    Өөрийн бүртгэлээр нэвтэрнэ үү.
+                </p>
+
+            </div>
+
+            <button
+                onclick="closeAuthModal()"
+                class="w-9 h-9 rounded-lg
+                       bg-slate-800
+                       hover:bg-slate-700
+                       text-slate-400
+                       hover:text-white transition">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+
+        <!-- Form -->
+
+        <form id="auth-form"
+              class="p-6 space-y-4">
+
+            <!-- Full Name -->
+
+            <div id="fullname-group">
+
+                <label class="block text-sm
+                              font-medium text-slate-300 mb-2">
+                    Бүтэн нэр
+                </label>
+
+                <input
+                    id="fullname"
+                    type="text"
+                    class="auth-input"
+                    placeholder="Жишээ: Бат Болд">
+
+            </div>
+
+
+            <!-- Email -->
+
+            <div>
+
+                <label class="block text-sm
+                              font-medium text-slate-300 mb-2">
+                    Имэйл
+                </label>
+
+                <input
+                    id="email"
+                    type="email"
+                    required
+                    class="auth-input"
+                    placeholder="you@example.com">
+
+            </div>
+
+
+            <!-- Password -->
+
+            <div>
+
+                <label class="block text-sm
+                              font-medium text-slate-300 mb-2">
+                    Нууц үг
+                </label>
+
+                <input
+                    id="password"
+                    type="password"
+                    required
+                    minlength="6"
+                    class="auth-input"
+                    placeholder="••••••••">
+
+            </div>
+
+
+            <!-- Confirm Password -->
+
+            <div id="confirm-password-group">
+
+                <label class="block text-sm
+                              font-medium text-slate-300 mb-2">
+                    Нууц үг давтах
+                </label>
+
+                <input
+                    id="confirm-password"
+                    type="password"
+                    class="auth-input"
+                    placeholder="••••••••">
+
+            </div>
+
+
+            <!-- Error -->
+
+            <div id="auth-error"
+                 class="hidden rounded-lg
+                        bg-red-500/10
+                        border border-red-500/20
+                        text-red-400
+                        text-sm p-3">
+            </div>
+
+
+            <!-- Success -->
+
+            <div id="auth-success"
+                 class="hidden rounded-lg
+                        bg-emerald-500/10
+                        border border-emerald-500/20
+                        text-emerald-400
+                        text-sm p-3">
+            </div>
+
+
+            <!-- Submit -->
+
+            <button
+                id="auth-submit"
+                type="submit"
+                class="w-full py-3.5 rounded-xl
+                       bg-amber-500
+                       hover:bg-amber-600
+                       text-slate-950
+                       font-bold
+                       transition">
+
+                Нэвтрэх
+
+            </button>
+
+        </form>
+
+
+        <!-- Switch -->
+
+        <div class="px-6 pb-6 text-center">
+
+            <p id="auth-switch-text"
+               class="text-sm text-slate-400">
+
+                Бүртгэл байхгүй юу?
+
+                <button
+                    onclick="switchAuthMode()"
+                    class="text-amber-400
+                           hover:text-amber-300
+                           font-semibold">
+
+                    Бүртгүүлэх
+
+                </button>
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+    /* =====================================================
+       SUPABASE CONFIG
+    ===================================================== */
+
+    const SUPABASE_URL =
+        "https://snekkyaejwoxznuumyiq.supabase.co";
+
+    const SUPABASE_KEY =
+        "sb_publishable_8_ShdClvT0sGUc7y9txcKQ_G5vJZzSc";
+
+    const supabaseClient =
+        window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+
+
+    /* =====================================================
+       AUTH MODE
+    ===================================================== */
+
+    let authMode = "login";
+
+
+    /* =====================================================
+       OPEN MODAL
+    ===================================================== */
+
+    function openAuthModal(mode) {
+
+        authMode = mode;
+
+        document
+            .getElementById("auth-modal")
+            .classList.remove("hidden");
+
+        updateAuthUI();
+
+        clearMessages();
+    }
+
+
+    /* =====================================================
+       CLOSE MODAL
+    ===================================================== */
+
+    function closeAuthModal() {
+
+        document
+            .getElementById("auth-modal")
+            .classList.add("hidden");
+
+        document
+            .getElementById("auth-form")
+            .reset();
+
+        clearMessages();
+    }
+
+
+    /* =====================================================
+       UPDATE AUTH UI
+    ===================================================== */
+
+    function updateAuthUI() {
+
+        const title =
+            document.getElementById("auth-title");
+
+        const subtitle =
+            document.getElementById("auth-subtitle");
+
+        const fullnameGroup =
+            document.getElementById("fullname-group");
+
+        const confirmGroup =
+            document.getElementById(
+                "confirm-password-group"
+            );
+
+        const submit =
+            document.getElementById("auth-submit");
+
+        const switchText =
+            document.getElementById(
+                "auth-switch-text"
+            );
+
+
+        if (authMode === "login") {
+
+            title.textContent = "Нэвтрэх";
+
+            subtitle.textContent =
+                "Өөрийн бүртгэлээр нэвтэрнэ үү.";
+
+            fullnameGroup.classList.add("hidden");
+
+            confirmGroup.classList.add("hidden");
+
+            submit.textContent = "Нэвтрэх";
+
+            switchText.innerHTML = `
+                Бүртгэл байхгүй юу?
+                <button
+                    type="button"
+                    onclick="switchAuthMode()"
+                    class="text-amber-400
+                           hover:text-amber-300
+                           font-semibold">
+                    Бүртгүүлэх
+                </button>
+            `;
+
+        } else {
+
+            title.textContent = "Бүртгэл үүсгэх";
+
+            subtitle.textContent =
+                "Discover Mongolia-д бүртгүүлээрэй.";
+
+            fullnameGroup.classList.remove("hidden");
+
+            confirmGroup.classList.remove("hidden");
+
+            submit.textContent = "Бүртгүүлэх";
+
+            switchText.innerHTML = `
+                Бүртгэлтэй юу?
+                <button
+                    type="button"
+                    onclick="switchAuthMode()"
+                    class="text-amber-400
+                           hover:text-amber-300
+                           font-semibold">
+                    Нэвтрэх
+                </button>
+            `;
+
         }
-        setInterval(updateTime, 1000);
-        updateTime();
-    </script>
+
+    }
+
+
+    /* =====================================================
+       SWITCH LOGIN / SIGNUP
+    ===================================================== */
+
+    function switchAuthMode() {
+
+        authMode =
+            authMode === "login"
+                ? "signup"
+                : "login";
+
+        updateAuthUI();
+
+        clearMessages();
+
+    }
+
+
+    /* =====================================================
+       MESSAGES
+    ===================================================== */
+
+    function clearMessages() {
+
+        document
+            .getElementById("auth-error")
+            .classList.add("hidden");
+
+        document
+            .getElementById("auth-success")
+            .classList.add("hidden");
+
+    }
+
+
+    function showError(message) {
+
+        const box =
+            document.getElementById("auth-error");
+
+        box.textContent = message;
+
+        box.classList.remove("hidden");
+
+    }
+
+
+    function showSuccess(message) {
+
+        const box =
+            document.getElementById("auth-success");
+
+        box.textContent = message;
+
+        box.classList.remove("hidden");
+
+    }
+
+
+    /* =====================================================
+       AUTH FORM SUBMIT
+    ===================================================== */
+
+    document
+        .getElementById("auth-form")
+        .addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+            clearMessages();
+
+
+            const email =
+                document
+                    .getElementById("email")
+                    .value
+                    .trim();
+
+            const password =
+                document
+                    .getElementById("password")
+                    .value;
+
+
+            /* =============================================
+               LOGIN
+            ============================================= */
+
+            if (authMode === "login") {
+
+                const {
+                    data,
+                    error
+                } =
+                    await supabaseClient.auth
+                        .signInWithPassword({
+                            email: email,
+                            password: password
+                        });
+
+
+                if (error) {
+
+                    showError(
+                        getFriendlyError(error)
+                    );
+
+                    return;
+                }
+
+
+                showSuccess(
+                    "Амжилттай нэвтэрлээ!"
+                );
+
+
+                setTimeout(() => {
+
+                    closeAuthModal();
+
+                }, 800);
+
+
+                return;
+            }
+
+
+            /* =============================================
+               SIGN UP
+            ============================================= */
+
+            const fullName =
+                document
+                    .getElementById("fullname")
+                    .value
+                    .trim();
+
+            const confirmPassword =
+                document
+                    .getElementById(
+                        "confirm-password"
+                    )
+                    .value;
+
+
+            if (!fullName) {
+
+                showError(
+                    "Бүтэн нэрээ оруулна уу."
+                );
+
+                return;
+            }
+
+
+            if (password.length < 6) {
+
+                showError(
+                    "Нууц үг хамгийн багадаа 6 тэмдэгт байна."
+                );
+
+                return;
+            }
+
+
+            if (password !== confirmPassword) {
+
+                showError(
+                    "Нууц үгнүүд таарахгүй байна."
+                );
+
+                return;
+            }
+
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient.auth
+                    .signUp({
+
+                        email: email,
+
+                        password: password,
+
+                        options: {
+
+                            data: {
+                                full_name: fullName
+                            }
+
+                        }
+
+                    });
+
+
+            if (error) {
+
+                showError(
+                    getFriendlyError(error)
+                );
+
+                return;
+            }
+
+
+            /*
+             * Profile table-д мэдээлэл хадгална.
+             */
+
+            if (data.user) {
+
+                const {
+                    error: profileError
+                } =
+                    await supabaseClient
+                        .from("profiles")
+                        .insert({
+
+                            id: data.user.id,
+
+                            full_name: fullName,
+
+                            email: email
+
+                        });
+
+
+                if (profileError) {
+
+                    console.error(
+                        "Profile error:",
+                        profileError
+                    );
+
+                }
+
+            }
+
+
+            /*
+             * Email confirmation асаалттай
+             * байвал хэрэглэгч email-ээ баталгаажуулна.
+             */
+
+            if (!data.session) {
+
+                showSuccess(
+                    "Бүртгэл амжилттай үүслээ. " +
+                    "Имэйл хаягаа шалгаад баталгаажуулна уу."
+                );
+
+            } else {
+
+                showSuccess(
+                    "Бүртгэл амжилттай үүслээ!"
+                );
+
+            }
+
+
+            setTimeout(() => {
+
+                closeAuthModal();
+
+            }, 2500);
+
+        });
+
+
+    /* =====================================================
+       FRIENDLY AUTH ERRORS
+    ===================================================== */
+
+    function getFriendlyError(error) {
+
+        const message =
+            error?.message?.toLowerCase() || "";
+
+
+        if (
+            message.includes("invalid login credentials")
+        ) {
+
+            return "Имэйл эсвэл нууц үг буруу байна.";
+
+        }
+
+
+        if (
+            message.includes("user already registered")
+        ) {
+
+            return "Энэ имэйлээр бүртгэл аль хэдийн үүссэн байна.";
+
+        }
+
+
+        if (
+            message.includes("password")
+        ) {
+
+            return "Нууц үгийн шаардлагыг шалгана уу.";
+
+        }
+
+
+        if (
+            message.includes("email")
+        ) {
+
+            return "Имэйл хаягаа зөв оруулна уу.";
+
+        }
+
+
+        return error.message ||
+               "Алдаа гарлаа. Дахин оролдоно уу.";
+
+    }
+
+
+    /* =====================================================
+       UPDATE HEADER AFTER LOGIN
+    ===================================================== */
+
+    async function updateAuthArea() {
+
+        const {
+            data
+        } =
+            await supabaseClient
+                .auth
+                .getUser();
+
+
+        const authArea =
+            document.getElementById(
+                "auth-area"
+            );
+
+
+        if (!data.user) {
+
+            authArea.innerHTML = `
+
+                <div class="flex items-center gap-2">
+
+                    <button
+                        onclick="openAuthModal('login')"
+                        class="hidden sm:block
+                               px-4 py-2 rounded-lg
+                               border border-slate-700
+                               hover:border-amber-500
+                               text-slate-200
+                               hover:text-amber-400
+                               text-sm font-semibold
+                               transition">
+
+                        Нэвтрэх
+
+                    </button>
+
+
+                    <button
+                        onclick="openAuthModal('signup')"
+                        class="px-4 py-2 rounded-lg
+                               bg-amber-500
+                               hover:bg-amber-600
+                               text-slate-950
+                               text-sm font-bold
+                               transition">
+
+                        Бүртгүүлэх
+
+                    </button>
+
+                </div>
+
+            `;
+
+            return;
+        }
+
+
+        const user =
+            data.user;
+
+
+        const name =
+            user.user_metadata?.full_name ||
+            user.email?.split("@")[0] ||
+            "Хэрэглэгч";
+
+
+        authArea.innerHTML = `
+
+            <div class="flex items-center gap-2">
+
+                <div class="hidden sm:flex
+                            items-center gap-2
+                            px-3 py-2 rounded-lg
+                            bg-slate-900
+                            border border-slate-800">
+
+                    <div class="w-7 h-7 rounded-full
+                                bg-amber-500
+                                text-slate-950
+                                flex items-center
+                                justify-center
+                                font-bold text-xs">
+
+                        ${escapeHTML(
+                            name.charAt(0).toUpperCase()
+                        )}
+
+                    </div>
+
+                    <span class="text-sm
+                                 text-slate-200
+                                 max-w-[120px]
+                                 truncate">
+
+                        ${escapeHTML(name)}
+
+                    </span>
+
+                </div>
+
+
+                <button
+                    onclick="logout()"
+                    class="px-4 py-2 rounded-lg
+                           border border-slate-700
+                           hover:border-red-500
+                           text-slate-300
+                           hover:text-red-400
+                           text-sm font-semibold
+                           transition">
+
+                    <i class="fa-solid fa-right-from-bracket
+                              mr-1">
+                    </i>
+
+                    Гарах
+
+                </button>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /* =====================================================
+       LOGOUT
+    ===================================================== */
+
+    async function logout() {
+
+        const {
+            error
+        } =
+            await supabaseClient
+                .auth
+                .signOut();
+
+
+        if (error) {
+
+            alert(
+                "Гарахад алдаа гарлаа: " +
+                error.message
+            );
+
+            return;
+        }
+
+
+        updateAuthArea();
+
+    }
+
+
+    /* =====================================================
+       ESCAPE HTML
+    ===================================================== */
+
+    function escapeHTML(value) {
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    /* =====================================================
+       AUTH STATE LISTENER
+    ===================================================== */
+
+    supabaseClient.auth
+        .onAuthStateChange(
+            (event, session) => {
+
+                updateAuthArea();
+
+            }
+        );
+
+
+    /* =====================================================
+       CLOCK
+    ===================================================== */
+
+    function updateTime() {
+
+        const now =
+            new Date();
+
+        const options = {
+
+            timeZone: "Asia/Ulaanbaatar",
+
+            hour: "2-digit",
+
+            minute: "2-digit",
+
+            second: "2-digit",
+
+            hour12: false
+
+        };
+
+
+        const timeString =
+            now.toLocaleTimeString(
+                "mn-MN",
+                options
+            );
+
+
+        const element =
+            document.getElementById(
+                "current-datetime"
+            );
+
+
+        if (element) {
+
+            element.textContent =
+                `Улаанбаатар цаг: ${timeString}`;
+
+        }
+
+    }
+
+
+    setInterval(
+        updateTime,
+        1000
+    );
+
+    updateTime();
+
+
+    /* =====================================================
+       INITIAL AUTH CHECK
+    ===================================================== */
+
+    updateAuthArea();
+
+</script>
+
 </body>
 </html>
